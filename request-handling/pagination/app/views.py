@@ -32,16 +32,20 @@ def bus_stations(request):
         page = paginator.page(paginator.num_pages)
         data = page.object_list
 
-    next_page, next_page_url = None, None
+    next_page, prev_page, prev_page_url, next_page_url = None, None, None, None
 
     if page.has_next():
         next_page = paginator.page(current_page).next_page_number()
-        next_page_url = f'http://127.0.0.1:8000{reverse("bus_stations")}?{urlencode({"page": next_page})}'
+        next_page_url = f'{reverse("bus_stations")}?{urlencode({"page": next_page})}'
+
+    if page.has_previous():
+        prev_page = paginator.page(current_page).previous_page_number()
+        prev_page_url = f'{reverse("bus_stations")}?{urlencode({"page": prev_page})}'
 
     return render_to_response("index.html", context={
         'bus_stations': data,
         'current_page': current_page,
-        'prev_page_url': None,
+        'prev_page_url': prev_page_url,
         'next_page_url': next_page_url,
     })
 
