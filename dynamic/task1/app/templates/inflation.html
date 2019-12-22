@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+{% load static %}
+{% load color_filter %}
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Инфляция в России</title>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  </head>
+ <body>
+    {% block content %}
+      <div class="row">
+        <h1 class="col s12">Инфляция в России</h1>
+        <div class="col s12 m8">
+
+        <table>
+            <tr>
+                {% for item in fieldnames %}
+                <th style="background:{% if forloop.last %}gray{% endif %}"> {{ item }}</th>
+                {% endfor %}
+            </tr>
+            {% for item in rows %}
+            <tr>
+                {% for key,value in item.items %}
+                {% if key != fieldnames|first and key != fieldnames|last %}
+                <td style="background:{{value|color_filter}}">{{value|default:'-'}}</td>
+                {% elif key == fieldnames|last %}
+                <td style="background:gray">{{value}}</td>
+                {% else %}
+                <td>{{value}}</td>
+                {% endif %}
+                {%endfor%}
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+      </div>
+    {% endblock %}
+</html>
