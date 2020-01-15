@@ -21,11 +21,16 @@ def product_view(request, pk):
     product = get_object_or_404(Product, id=pk)
     is_review_exist = True
 
+    if not request.session.get('reviewed_products'):
+        request.session['reviewed_products'] = list()
+
     form = ReviewForm
     if request.method == 'POST':
-        review_text, product_review = request.POST.get('text'), request.POST.get('product')
-        Review.objects.create(text=review_text, product=product)
-        request.session['reviewed_products'].append(product.id)
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            Review.objects.create(text=form.cleaned_data['text'], product=product)
+            request.session['reviewed_products'].append(product.id)
+            return redirect('product_detail', pk=product.id)
 
     if product.id in request.session['reviewed_products']:
         is_review_exist = True
