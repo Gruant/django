@@ -19,7 +19,7 @@ def product_list_view(request):
 def product_view(request, pk):
     template = 'app/product_detail.html'
     product = get_object_or_404(Product, id=pk)
-    is_review_exist = True
+    is_review_exist = False
 
     if not request.session.get('reviewed_products'):
         request.session['reviewed_products'] = list()
