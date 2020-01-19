@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Угадай число{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header">
+        <h1>Игра "Угадай число"</h1>
+        <h3> {% if number %}
+                <p>Загаданное число {{number}}</p>
+            {% elif text %}
+                {{text}}
+            {% endif %}
+            {% if count %}
+                {% if owner%}
+                <p>Число отгадали с {{ count }} попыток </p>
+                {% else %}
+                <p>Вы отгадали с {{ count }} попыток </p>
+                {% endif %}
+            {% endif %}
+        </h3>
+        {% if form %}
+        <form action="{% url 'home'%}" method="post">
+            {% csrf_token %}
+            {% for i in form %}
+            {{ i }}
+            {{ i.errors }}
+            {% endfor %}
+            <button>Отгадать</button>
+        </form>
+        {% endif %}
+        {{ answer }}
+    </div>
+</div>
+{% endblock %}
