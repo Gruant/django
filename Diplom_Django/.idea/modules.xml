@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../../../Diplom_DJ/.idea/Diplom_DJ.iml" filepath="$PROJECT_DIR$/../../../Diplom_DJ/.idea/Diplom_DJ.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Diplom_Django.iml" filepath="$PROJECT_DIR$/.idea/Diplom_Django.iml" />
+    </modules>
+  </component>
+</project>
