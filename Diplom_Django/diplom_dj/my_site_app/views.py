@@ -99,30 +99,26 @@ def product_detail(request, product_slug):
     return render(request, template, context)
 
 
-def get_basket(uid):
-    basket, created = Basket.objects.get_or_create(uid=uid)
-    return basket
-
-
-def get_uid(request):
+def get_basket(request):
     if not request.user.is_authenticated:
         uid = request.session.session_key
         if not uid:
             uid = request.session.cycle_key()
     else:
         uid = request.user.username
-    return uid
+    basket, created = Basket.objects.get_or_create(uid=uid)
+    return basket
 
 
 def basket_view(request):
     context = dict()
-    basket = get_basket(get_uid(request))
+    basket = get_basket(request)
     context['basket'] = ProductInBasket.objects.filter(basket=basket).select_related('product')
     return render(request, 'cart.html', context=context)
 
 
 def add_to_basket(request, product_id):
-    basket = get_basket(get_uid(request))
+    basket = get_basket(request)
     product = Product.objects.get(id=product_id)
 
     product_in_basket = ProductInBasket.objects.filter(basket=basket, product=product)
@@ -138,8 +134,7 @@ def add_to_basket(request, product_id):
 
 
 def order_creation(request):
-    uid = get_uid(request)
-    basket = get_basket(uid)
+    basket = get_basket(request)
     products = basket.items.all()
 
     if products:
