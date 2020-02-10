@@ -19,11 +19,11 @@
         {% for product in products %}
         <div class="col-md-4">
           <h2>{{ product.title }}</h2>
-          <a href="{% url 'product_detail' id=product.id %}">
+          <a href="{% url 'product_detail' product.slug %}">
           <img src="{{ product.image.url }}" width="180">
           </a>
             <h4>Цена: {{ product.price }}</h4>
-          <form action="{% url 'add_to_basket' product.product_id %}">
+          <form action="{% url 'add_to_basket' product.id %}">
             <input type="submit" class="btn btn-secondary" value="Добавить в корзину">
           </form>
         </div>
