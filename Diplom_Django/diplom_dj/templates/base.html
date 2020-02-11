@@ -28,14 +28,17 @@
       </li>
 
       {% recursetree category %}
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="{% url 'category' node.pk %}"
-            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >{{ node.name }}</a>
-        {% if not node.is_leaf_node %}
-        <ul class="dropdown-menu" aria-labelledby="dropdown">{{ children }}</ul>
-        {% endif %}
-      </li>
-      {% endrecursetree %}
+        <li class="nav-item dropdown">
+            <a class="nav-link {% if not node.is_leaf_node %}dropdown-toggle{% endif %}" id="dropdown01"
+               data-toggle="{% if not node.is_leaf_node %}dropdown{% endif %}"
+               href="{% url 'category' node.pk %}" aria-haspopup="true" aria-expanded="true"> {{ node.name }}</a>
+            {% if not node.is_leaf_node %}
+                <ul class="dropdown-menu" aria-labelledby="dropdown01">
+                  <li class="dropdown-item">{{ children }}</li>
+                </ul>
+            {% endif %}
+         </li>
+    {% endrecursetree %}
 
     </ul>
 
