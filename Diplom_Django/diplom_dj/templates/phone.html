@@ -24,7 +24,7 @@
     <hr>
 
     {% for review in reviews %}
-      {{ review.rating|stars_rating }} <span>{{ review.author }}</span>
+      {{ review.rating|stars_rating }} <span>{{ review.author.first_name }}</span>
       <p> {{ review.text }}</p>
     {% endfor %}
 

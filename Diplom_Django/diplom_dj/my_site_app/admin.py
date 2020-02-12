@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from mptt.admin import MPTTModelAdmin
 import admin_thumbnails
 from .models import Product, Category, Collection, Order, ProductOrder

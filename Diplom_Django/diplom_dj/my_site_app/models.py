@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 from django.template.defaultfilters import slugify
@@ -71,7 +72,7 @@ class ProductInBasket(models.Model):
 class Order(models.Model):
     product = models.ManyToManyField('Product', related_name='order', verbose_name='Товары',
                                      through='ProductOrder')
-    buyer = models.CharField(max_length=150, verbose_name='Покупатель', default='')
+    buyer = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Покупатель', default='')
     created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     total = models.PositiveIntegerField(verbose_name='Сумма', default=0)
 
@@ -102,7 +103,7 @@ class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     rating = models.PositiveIntegerField(verbose_name='Оценка')
-    author = models.CharField(max_length=50, null=True, blank=True, verbose_name='Автор', default='Анонимный отзыв')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Автор')
 
     class Meta:
         verbose_name = 'Отзыв'

@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
@@ -73,6 +74,7 @@ def view_category(request, pk):
 def product_detail(request, product_slug):
     template = 'phone.html'
     try:
+        user_uid = get_uid(request)
         product = Product.objects.get(slug=product_slug)
         review_data = Review.objects.filter(product=product).all()
 
@@ -82,7 +84,10 @@ def product_detail(request, product_slug):
                 text = form.cleaned_data['description']
                 rating = form.cleaned_data['mark']
                 author = form.cleaned_data['name']
-                Review.objects.create(text=text, rating=rating, author=author, product=product)
+                user, created = User.objects.get_or_create(username=user_uid)
+                user.first_name = author
+                user.save()
+                Review.objects.create(text=text, rating=rating, author=user, product=product)
                 return redirect('product_detail', product_slug=product.slug)
 
         else:
@@ -99,26 +104,30 @@ def product_detail(request, product_slug):
     return render(request, template, context)
 
 
-def get_basket(request):
+def get_uid(request):
     if not request.user.is_authenticated:
         uid = request.session.session_key
         if not uid:
             uid = request.session.cycle_key()
     else:
         uid = request.user.username
+    return uid
+
+
+def get_basket(uid):
     basket, created = Basket.objects.get_or_create(uid=uid)
     return basket
 
 
 def basket_view(request):
     context = dict()
-    basket = get_basket(request)
+    basket = get_basket(get_uid(request))
     context['basket'] = ProductInBasket.objects.filter(basket=basket).select_related('product')
     return render(request, 'cart.html', context=context)
 
 
 def add_to_basket(request, product_id):
-    basket = get_basket(request)
+    basket = get_basket(get_uid(request))
     product = Product.objects.get(id=product_id)
 
     product_in_basket = ProductInBasket.objects.filter(basket=basket, product=product)
@@ -134,11 +143,13 @@ def add_to_basket(request, product_id):
 
 
 def order_creation(request):
-    basket = get_basket(request)
+    user_uid = get_uid(request)
+    basket = get_basket(user_uid)
     products = basket.items.all()
 
     if products:
-        order = Order.objects.create(buyer=uid, total=0)
+        user, created = User.objects.get_or_create(username=user_uid)
+        order = Order.objects.create(buyer=user, total=0)
         for product in products:
             item = ProductInBasket.objects.get(product=product, basket=basket)
             ProductOrder.objects.create(product=product, order=order, total=(product.price * item.count),
